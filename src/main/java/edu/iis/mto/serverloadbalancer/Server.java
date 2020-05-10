@@ -15,6 +15,15 @@ public class Server {
 	public double getCurrentLoadPercentage() {
 		return currentLoadPercentage;
 	}
+	public void setCurrentLoadPercentage(double currentLoadPercentage) {
+		this.currentLoadPercentage = currentLoadPercentage;
+	}
+
+	public boolean contains(VM vm) {
+		return true;
+	}
+
+
 
 	public static final class Builder {
 		private int capacity;
