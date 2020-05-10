@@ -59,6 +59,15 @@ public class ServerLoadBalancerTest {
 		assertThat("More loaded server should not contains the vm.", !moreLoadedServer.contains(vm));
 	}
 
+	@Test
+	public void checkIfFullServerCanAddNewVMMachine() {
+		Server server = server().withCapacity(10).withCurrentLoadPercentage(90.0d).build();
+		VM vm = buildVM(2);
+		balancing(serverList(server), vmsList(vm));
+		assertThat(server, CurrentLoadPercentageMatcher.hasCurrentLoadPercentage(90.0));
+		assertThat("Server should not contains the vm.", !server.contains(vm));
+	}
+
 	private VM[] vmsList(VM ...vms) {
 		return vms;
 	}
