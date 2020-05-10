@@ -11,6 +11,11 @@ public class Server {
 
 	private Server(Builder builder){
 		this.capacity = builder.capacity;
+		if(builder.currentLoadPercentage > 0){
+			int vmSize = (int)(builder.currentLoadPercentage / (double) builder.capacity * MAXIMUM_LOAD);
+			VM vm = VM.builder().withSize(vmSize).build();
+			this.addVM(vm);
+		}
 	}
 
 	public static Builder builder() {
@@ -25,7 +30,7 @@ public class Server {
 	}
 
 	public boolean contains(VM vm) {
-		return true;
+		return VMs.contains(vm);
 	}
 
 	public int getCapacity() {
@@ -43,9 +48,15 @@ public class Server {
 
 	public static final class Builder {
 		private int capacity;
+		private double currentLoadPercentage;
 
 		public Builder withCapacity(int capacity) {
 			this.capacity = capacity;
+			return this;
+		}
+
+		public Builder withCurrentLoadPercentage(double percentageLoad) {
+			this.currentLoadPercentage = percentageLoad;
 			return this;
 		}
 

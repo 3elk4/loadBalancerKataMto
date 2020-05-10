@@ -15,14 +15,14 @@ public class ServerLoadBalancerTest {
 
 	@Test
 	public void checkIfServerIsEmptyAndNoVM() {
-		Server server = buildServer(0);
+		Server server = server().withCapacity(0).build();
 		balancing(serverList(server), emptyVMsList());
 		assertThat(server, CurrentLoadPercentageMatcher.hasCurrentLoadPercentage(0.0));
 	}
 
 	@Test
 	public void checkIfServerWithOneSlotCapacityAndOneVMFillsWholeServer() {
-		Server server = buildServer(1);
+		Server server = server().withCapacity(1).build();
 		VM vm = buildVM(1);
 		balancing(serverList(server), vmsList(vm));
 		assertThat(server, CurrentLoadPercentageMatcher.hasCurrentLoadPercentage(100.0));
@@ -31,7 +31,7 @@ public class ServerLoadBalancerTest {
 
 	@Test
 	public void checkIfServerWithOneSlotCapacityAndOneVMFillsServerPartially() {
-		Server server = buildServer(10);
+		Server server = server().withCapacity(10).build();
 		VM vm = buildVM(1);
 		balancing(serverList(server), vmsList(vm));
 		assertThat(server, CurrentLoadPercentageMatcher.hasCurrentLoadPercentage(10.0));
@@ -40,12 +40,23 @@ public class ServerLoadBalancerTest {
 
 	@Test
 	public void checkIfServerWithEnoughCapacityAndTwoVMFillsWholeServer() {
-		Server server = buildServer(2);
+		Server server = server().withCapacity(2).build();
 		VM vm1 = buildVM(1);
 		VM vm2 = buildVM(1);
 		balancing(serverList(server), vmsList(vm1, vm2));
 		assertThat(server, CurrentLoadPercentageMatcher.hasCurrentLoadPercentage(100.0));
 		assertThat(server, VMCounterMatcher.hasVmCountOf(2));
+	}
+
+	@Test
+	public void checkIfLessLoadedServerIsChosenForVM() {
+		Server moreLoadedServer = server().withCapacity(100).withCurrentLoadPercentage(50.0d).build();
+		Server lessLoadedServer = server().withCapacity(100).withCurrentLoadPercentage(20.0d).build();
+		VM vm = buildVM(10);
+
+		balancing(serverList(moreLoadedServer, lessLoadedServer), vmsList(vm));
+		assertThat("Less loaded server should contains the vm.", lessLoadedServer.contains(vm));
+		assertThat("More loaded server should not contains the vm.", !moreLoadedServer.contains(vm));
 	}
 
 	private VM[] vmsList(VM ...vms) {
@@ -64,8 +75,8 @@ public class ServerLoadBalancerTest {
 		return servers;
 	}
 
-	private Server buildServer(int capacity) {
-		return Server.builder().withCapacity(capacity).build();
+	private Server.Builder server() {
+		return Server.builder();
 	}
 
 	private VM buildVM(int size) {
