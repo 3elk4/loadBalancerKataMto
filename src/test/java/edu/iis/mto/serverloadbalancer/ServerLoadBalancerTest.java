@@ -68,6 +68,21 @@ public class ServerLoadBalancerTest {
 		assertThat("Server should not contains the vm.", !server.contains(vm));
 	}
 
+	@Test
+	public void checkIfVMsDistributedEvenlyToServers() {
+		Server firstServer = server().withCapacity(4).build();
+		Server secondServer = server().withCapacity(6).build();
+		VM vm1 = buildVM(2);
+		VM vm2 = buildVM(4);
+		VM vm3 = buildVM(2);
+		balancing(serverList(firstServer, secondServer), vmsList(vm1, vm2, vm3));
+		assertThat("Server should contains the vm1.", firstServer.contains(vm1));
+		assertThat("Server should contains the vm3.", firstServer.contains(vm3));
+		assertThat("Server should contains the vm2.", secondServer.contains(vm2));
+		assertThat(firstServer, VMCounterMatcher.hasVmCountOf(2));
+		assertThat(secondServer, VMCounterMatcher.hasVmCountOf(1));
+	}
+
 	private VM[] vmsList(VM ...vms) {
 		return vms;
 	}
