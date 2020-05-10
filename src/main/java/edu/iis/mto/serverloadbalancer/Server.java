@@ -1,6 +1,7 @@
 package edu.iis.mto.serverloadbalancer;
 
 public class Server {
+	private static final double MAXIMUM_LOAD = 100.0d;
 	private double currentLoadPercentage;
 	private int capacity;
 
@@ -23,6 +24,13 @@ public class Server {
 		return true;
 	}
 
+	public int getCapacity() {
+		return capacity;
+	}
+
+	public void addVM(VM vm) {
+		this.currentLoadPercentage = vm.getSize() / (double)capacity * MAXIMUM_LOAD;
+	}
 
 
 	public static final class Builder {

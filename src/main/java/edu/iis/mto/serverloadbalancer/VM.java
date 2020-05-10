@@ -9,6 +9,10 @@ public class VM {
 
 	public static Builder builder() { return new Builder(); }
 
+	public int getSize() {
+		return size;
+	}
+
 	public static final class Builder {
 		private int size;
 

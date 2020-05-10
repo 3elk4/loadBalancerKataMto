@@ -19,11 +19,20 @@ public class ServerLoadBalancerTest {
 	}
 
 	@Test
-	public void checkIfServerWithOneSlotCapacityAndOneVMFillsServer() {
+	public void checkIfServerWithOneSlotCapacityAndOneVMFillsWholeServer() {
 		Server server = buildServer(1);
 		VM vm = buildVM(1);
 		balancing(serverList(server), vmsList(vm));
 		assertThat(server, CurrentLoadPercentageMatcher.hasCurrentLoadPercentage(100.0));
+		assertThat("Server should contains the one vm.", server.contains(vm));
+	}
+
+	@Test
+	public void checkIfServerWithOneSlotCapacityAndOneVMFillsServerPartially() {
+		Server server = buildServer(10);
+		VM vm = buildVM(1);
+		balancing(serverList(server), vmsList(vm));
+		assertThat(server, CurrentLoadPercentageMatcher.hasCurrentLoadPercentage(10.0));
 		assertThat("Server should contains the one vm.", server.contains(vm));
 	}
 
