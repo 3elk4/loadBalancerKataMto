@@ -15,7 +15,7 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 public class ServerLoadBalancerParametrizedTest extends ServerLoadBalancerBaseTest{
 	@Parameterized.Parameters
-	public static Collection<Object[]> addedNumbers() {
+	public static Collection<Object[]> balancingValues() {
 		return Arrays.asList(new Object[][] { { 1, 1, 100.0 },
 											{ 10, 5, 50.0 },
 											{ 5, 4, 80.0 },
