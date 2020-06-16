@@ -21,11 +21,20 @@ public class ServerLoadBalancerTest {
 	}
 
 	@Test
-	public void shouldFullBalanceOneEmptyServerOneVMS() {
+	public void shouldFullBalanceOneEmptyServerOneVM() {
 		Server server = build(server().withCapacity(1));
 		VM vm = build(vm().withSize(1));
 		balancing(listOfServers(server), listOfVMs(vm));
 		assertThat(server, hasLoadPercentageOf(100.0d));
+		assertThat("server should contain vm", server.contains(vm));
+	}
+
+	@Test
+	public void shouldPartlyBalanceOneEmptyServerOneVM() {
+		Server server = build(server().withCapacity(10));
+		VM vm = build(vm().withSize(5));
+		balancing(listOfServers(server), listOfVMs(vm));
+		assertThat(server, hasLoadPercentageOf(50.0d));
 		assertThat("server should contain vm", server.contains(vm));
 	}
 

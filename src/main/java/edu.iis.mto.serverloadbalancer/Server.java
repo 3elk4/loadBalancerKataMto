@@ -26,4 +26,8 @@ public class Server {
 	public boolean contains(VM vm) {
 		return this.vms.contains(vm);
 	}
+
+	public double getCapacity() {
+		return this.capacity;
+	}
 }
