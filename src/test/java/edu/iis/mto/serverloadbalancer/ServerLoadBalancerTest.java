@@ -38,6 +38,17 @@ public class ServerLoadBalancerTest {
 		assertThat("server should contain vm", server.contains(vm));
 	}
 
+	@Test
+	public void shouldPartlyBalanceOneEmptyServerTwoVMs() {
+		Server server = build(server().withCapacity(10));
+		VM vm1 = build(vm().withSize(5));
+		VM vm2 = build(vm().withSize(2));
+		balancing(listOfServers(server), listOfVMs(vm1, vm2));
+		assertThat(server, hasLoadPercentageOf(70.0d));
+		assertThat("server should contain vm", server.contains(vm1));
+		assertThat("server should contain vm", server.contains(vm2));
+	}
+
 	private <T> T build(Builder<T> builder) {
 		return builder.build();
 	}

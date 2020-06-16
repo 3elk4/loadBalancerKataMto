@@ -3,6 +3,7 @@ package edu.iis.mto.serverloadbalancer;
 import java.util.ArrayList;
 
 public class Server {
+	private static final double HUNDRET = 100.0;
 	private int capacity;
 	private double percentage;
 	private ArrayList<VM> vms = new ArrayList<>();
@@ -20,6 +21,7 @@ public class Server {
 	}
 
 	public void addVM(VM vm) {
+		this.percentage += ((double)vm.getSize() / this.getCapacity()) * HUNDRET;
 		this.vms.add(vm);
 	}
 
