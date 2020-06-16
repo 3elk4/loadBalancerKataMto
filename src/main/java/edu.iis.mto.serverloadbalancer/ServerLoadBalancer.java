@@ -4,7 +4,7 @@ public class ServerLoadBalancer {
 	public void balance(Server[] listOfServers, VM[] listOfVMs) {
 		for (VM vm : listOfVMs) {
 			Server lessLoaded = chooseLessLoadedServer(listOfServers);
-			lessLoaded.addVM(vm);
+			if(lessLoaded.canAddVm(vm)) lessLoaded.addVM(vm);
 		}
 	}
 

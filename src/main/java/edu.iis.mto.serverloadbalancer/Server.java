@@ -32,4 +32,9 @@ public class Server {
 	public double getCapacity() {
 		return this.capacity;
 	}
+
+	public boolean canAddVm(VM vm) {
+		double tempPercentage = this.percentage + ((double)vm.getSize() / this.getCapacity()) * HUNDRET;
+		return tempPercentage <= HUNDRET;
+	}
 }

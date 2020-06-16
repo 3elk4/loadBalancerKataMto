@@ -60,6 +60,14 @@ public class ServerLoadBalancerTest {
 		assertThat("server should contain vm", server1.contains(vm));
 	}
 
+	@Test
+	public void shouldNotBalanceToFullServerOneVm() {
+		Server server = build(server().withCapacity(10).withVmOfSize(9));
+		VM vm = build(vm().withSize(2));
+		balancing(listOfServers(server), listOfVMs(vm));
+		assertThat("server should not contain vm", !server.contains(vm));
+	}
+
 	private <T> T build(Builder<T> builder) {
 		return builder.build();
 	}
