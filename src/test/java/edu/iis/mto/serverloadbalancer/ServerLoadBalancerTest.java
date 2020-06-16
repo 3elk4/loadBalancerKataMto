@@ -20,6 +20,27 @@ public class ServerLoadBalancerTest {
 		assertThat(server, hasLoadPercentageOf(0.0d));
 	}
 
+	@Test
+	public void shouldFullBalanceOneEmptyServerOneVMS() {
+		Server server = build(server().withCapacity(1));
+		VM vm = build(vm().withSize(1));
+		balancing(listOfServers(server), listOfVMs(vm));
+		assertThat(server, hasLoadPercentageOf(100.0d));
+		assertThat("server should contain vm", server.contains(vm));
+	}
+
+	private <T> T build(Builder<T> builder) {
+		return builder.build();
+	}
+
+	private VMBuilder vm() {
+		return new VMBuilder();
+	}
+
+	private VM[] listOfVMs(VM... vms) {
+		return vms;
+	}
+
 	private void balancing(Server[] listOfServers, VM[] listOfVMs) {
 		new ServerLoadBalancer().balance(listOfServers, listOfVMs);
 	}
