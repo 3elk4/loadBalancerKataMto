@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 import org.junit.Test;
 
-public class ServerLoadBalancerTest {
+public class ServerLoadBalancerTest extends ServerLoadBalancerBaseTest{
 	@Test
 	public void itCompiles() {
 		assertThat(true, equalTo(true));
@@ -68,31 +68,19 @@ public class ServerLoadBalancerTest {
 		assertThat("server should not contain vm", !server.contains(vm));
 	}
 
-	private <T> T build(Builder<T> builder) {
-		return builder.build();
-	}
+	@Test
+	public void shouldBalanceTwoServersThreVMs() {
+		Server server1 = build(server().withCapacity(10).withVmOfSize(1));
+		Server server2 = build(server().withCapacity(10).withVmOfSize(3));
+		VM vm1 = build(vm().withSize(5));
+		VM vm2 = build(vm().withSize(3));
+		VM vm3 = build(vm().withSize(2));
+		balancing(listOfServers(server1, server2), listOfVMs(vm1, vm2, vm3));
 
-	private VMBuilder vm() {
-		return new VMBuilder();
-	}
-
-	private VM[] listOfVMs(VM... vms) {
-		return vms;
-	}
-
-	private void balancing(Server[] listOfServers, VM[] listOfVMs) {
-		new ServerLoadBalancer().balance(listOfServers, listOfVMs);
-	}
-
-	private VM[] emptyListOfVMs() {
-		return new VM[0];
-	}
-
-	private Server[] listOfServers(Server... servers) {
-		return servers;
-	}
-
-	private ServerBuilder server() {
-		return new ServerBuilder();
+		assertThat(server1, hasLoadPercentageOf(80.0d));
+		assertThat(server2, hasLoadPercentageOf(60.0d));
+		assertThat("server1 should contain vm1", server1.contains(vm1));
+		assertThat("server2 should contain vm2", server2.contains(vm2));
+		assertThat("server1 should contain vm3", server1.contains(vm3));
 	}
 }
